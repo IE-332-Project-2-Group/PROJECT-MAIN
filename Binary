@@ -20,9 +20,9 @@ for (i in f){
   x <- x/255
   pred <- model %>% predict(x)
   if (pred[1,2] < 0.50){
-    res <- rbind(res, data.frame(file = i, class = "not_grass", percent_dandelion = 1 - pred[1,1], percent_grass = pred[1,1]))
+    res <- rbind(res, data.frame(file = i, class = "not_grass", percent_dandelion = pred[1,1], percent_grass = 1- pred[1,1]))
   } else {
-    res <- rbind(res, data.frame(file = i, class = "grass", percent_dandelion = 1 - pred[1,1], percent_grass = pred[1,1]))
+    res <- rbind(res, data.frame(file = i, class = "grass", percent_dandelion = pred[1,1], percent_grass = 1 - pred[1,1]))
   }
 }
 
