@@ -1,0 +1,13 @@
+count <- 0
+for(i in 1:10){
+
+
+
+#ALGORITHM GOES HERE
+
+
+
+count_iteration <- sum(res$class == "not_dandelion")
+count <- count + count_iteration
+
+}
