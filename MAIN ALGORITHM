@@ -35,10 +35,10 @@ for (i in f) {
   pixel_num <- 224 * 224
   budget <- round(pixel_num * 0.01)
   
-  budget_alg1<- budget*(0.4687) #Weight Decided for Algorithm 1
+  budget_alg1<- budget*(0.5313) #Weight Decided for Algorithm 1
   budget_alg2<- budget*(0.2) #Weight Decided for Algorithm 2
   budget_alg3<- budget*(0.2) #Weight Decided for Algorithm 3
-  budget_alg4<- budget*(0.5313) #Weight Decided for Algorithm 4
+  budget_alg4<- budget*(0.4687) #Weight Decided for Algorithm 4
   budget_alg5<- budget*(0.2) #Weight Decided for Algorithm 5
   
   ##Algorithm 4 Andrew___________________________________________________________
@@ -111,12 +111,11 @@ for (i in f) {
   pixel_num <- 224 * 224
   budget <- round(pixel_num * 0.01)
   
-  budget_alg1<- budget*(0.4687) #Weight Decided for Algorithm 1
+  budget_alg1<- budget*(0.5313) #Weight Decided for Algorithm 1
   budget_alg2<- budget*(0.2) #Weight Decided for Algorithm 2
   budget_alg3<- budget*(0.2) #Weight Decided for Algorithm 3
-  budget_alg4<- budget*(0.5313) #Weight Decided for Algorithm 4
+  budget_alg4<- budget*(0.4687) #Weight Decided for Algorithm 4
   budget_alg5<- budget*(0.2) #Weight Decided for Algorithm 5
-
   ##Algorithm 4 Andrew___________________________________________________________
   #Generate random pixel indices
   pixel_indices_4 <- sample(pixel_num, budget_alg4, replace = FALSE)
