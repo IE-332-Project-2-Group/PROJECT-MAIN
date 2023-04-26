@@ -12,6 +12,41 @@ setwd("~/Desktop/Project")
 model_list <- load_model_tf("./dandelion_model/")
 model <- model_list
 
+#Functions Created for Sub-Algorithms
+change_brightness <- function(img, alpha, beta) {
+  new_image <- img
+  for (k in pixel_indices_6) {
+    row_index <- ceiling(k / 224)
+    col_index <- k %% 224
+    if (col_index == 0){ col_index <- 224}
+    new_image[, row_index, col_index ,] <- pmax(pmin(alpha*new_image[, row_index, col_index ,] + beta, 255), 0)
+  } 
+  #new_image <- array(0L, dim = dim(img))
+  #new_image <- pmax(pmin(alpha*x + beta, 255), 0)
+  return(new_image)
+}
+
+
+ccp_attack <- function(x, trans) {
+  img <- x
+  for (channel in seq_len(dim(x)[3])) {
+    for (j in pixel_indices_6) {
+      row_index <- ceiling(j / 224)
+      col_index <- j %% 224
+      if (col_index == 0){ col_index <- 224}
+      r <- img[,row_index,col_index,1]
+      g <- img[,row_index,col_index,2]
+      b <- img[,row_index,col_index,3]
+      temp <- r * trans[1, channel] + g * trans[2, channel] + b * trans[3, channel]
+      img[, row_index, col_index , channel] <- temp/3
+      img1 = change_brightness(img, 1, 30)
+    }
+    
+    return(img1)
+  }
+}
+
+
 #Set target image size
 target_size <- c(224, 224)
 
@@ -35,11 +70,11 @@ for (i in f) {
   pixel_num <- 224 * 224
   budget <- round(pixel_num * 0.01)
   
-  budget_alg1<- budget*(0.5313) #Weight Decided for Algorithm 1
+  budget_alg1<- budget*(0.16717) #Weight Decided for Algorithm 1
   budget_alg2<- budget*(0.2) #Weight Decided for Algorithm 2
-  budget_alg3<- budget*(0.2) #Weight Decided for Algorithm 3
-  budget_alg4<- budget*(0.4687) #Weight Decided for Algorithm 4
-  budget_alg5<- budget*(0.2) #Weight Decided for Algorithm 5
+  budget_alg3<- budget*(0.2)  #Weight Decided for Algorithm 3
+  budget_alg4<- budget*(0.14752) #Weight Decided for Algorithm 4
+  budget_alg6<- budget*(0.6853)*(0.009) #Weight Decided for Algorithm 6
   
   ##Algorithm 4 Andrew___________________________________________________________
   #Generate random pixel indices
@@ -82,6 +117,16 @@ for (i in f) {
     # Change the color of the pixel
     test_array[1, row_index, col_index, ] <- c(r, g, b)
   }
+  ##ALGORITHM 6 CCP Attack Hershi_______________________________________________
+  #CCP attack
+  pixel_indices_6 <-sample(pixel_num, budget_alg6, replace = FALSE)
+  a <- runif(3, 0, 1)
+  b <- runif(3, 0, 1)
+  c <- runif(3, 0, 1)
+  trans <- array(c(a, b, c), dim = c(3, 3))
+  
+  
+  test_array <- ccp_attack(test_array, trans)
   
   pred <- model %>% predict(test_array)
   
@@ -111,11 +156,11 @@ for (i in f) {
   pixel_num <- 224 * 224
   budget <- round(pixel_num * 0.01)
   
-  budget_alg1<- budget*(0.5313) #Weight Decided for Algorithm 1
+  budget_alg1<- budget*(0.16717) #Weight Decided for Algorithm 1
   budget_alg2<- budget*(0.2) #Weight Decided for Algorithm 2
   budget_alg3<- budget*(0.2) #Weight Decided for Algorithm 3
-  budget_alg4<- budget*(0.4687) #Weight Decided for Algorithm 4
-  budget_alg5<- budget*(0.2) #Weight Decided for Algorithm 5
+  budget_alg4<- budget*(0.14752) #Weight Decided for Algorithm 4
+  budget_alg6<- budget*(0.6853)*(0.009) #Weight Decided for Algorithm 6
   ##Algorithm 4 Andrew___________________________________________________________
   #Generate random pixel indices
   pixel_indices_4 <- sample(pixel_num, budget_alg4, replace = FALSE)
@@ -156,11 +201,21 @@ for (i in f) {
     # Change the color of the pixel
     test_array[1, row_index, col_index, ] <- c(r, g, b)
   }
+  ##ALGORITHM 6 CCP Attack Hershi_______________________________________________
+  #CCP attack
+  pixel_indices_6 <- sample(pixel_num,budget_alg6 , replace = FALSE)
+  a <- runif(3, 0, 1)
+  b <- runif(3, 0, 1)
+  c <- runif(3, 0, 1)
+  trans <- array(c(a, b, c), dim = c(3, 3))
+  
+  
+  test_array <- ccp_attack(test_array, trans)
   
   pred <- model %>% predict(test_array)
   
   # Record results in Res
-  if (pred[1,2] < 0.50){
+  if (pred[1,1] < 0.50){
     res <- rbind(res, data.frame(file = i, class = "not_dandelion", percent_dandelion = pred[1,1], percent_grass = 1- pred[1,1]))
   } else {
     res <- rbind(res, data.frame(file = i, class = "dandelion", percent_dandelion = pred[1,1], percent_grass = 1 - pred[1,1]))
