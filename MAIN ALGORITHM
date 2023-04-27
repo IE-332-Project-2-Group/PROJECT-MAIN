@@ -2,17 +2,22 @@
 #Each Sub-Algorithm Was Assigned a Weight Determined by 
 #Its Amount of Convinced Images from the Test Set
 
+#REQUIRED LIBRARIES
 library(tidyverse)
 library(keras)
 library(tensorflow)
 library(reticulate)
+library(jpeg)
 library(png)
+library(abind)
+library(grid)
 
 setwd("~/Desktop/Project")
 model_list <- load_model_tf("./dandelion_model/")
 model <- model_list
 
-#Functions Created for Sub-Algorithms
+#Functions Created for Sub-Algorithms___________________________________________
+#FUNCTION 1
 change_brightness <- function(img, alpha, beta) {
   new_image <- img
   for (k in pixel_indices_5) {
@@ -24,7 +29,7 @@ change_brightness <- function(img, alpha, beta) {
   return(new_image)
 }
 
-
+##FUNCTION 2
 ccp_attack <- function(x, trans) {
   img <- x
   for (channel in seq_len(dim(x)[3])) {
@@ -44,6 +49,18 @@ ccp_attack <- function(x, trans) {
   }
 }
 
+##FUNCTION 3
+apply_algorithm2 <- function(img_path) {
+  img <- readPNG("NOISE.png")
+  img <- img[,,1:3]
+  img[] <- runif(prod(dim(img)))
+  alpha <- array(0.99, dim(img)[1:2]) 
+  alpha_flat <- as.vector(alpha)
+  alpha_flat[1:budget_algAP] <- 1
+  img_with_alpha <- abind(array(img_path[1:budget_algAP], dim=c(sqrt(budget_algAP), sqrt(budget_algAP), 3)), array(alpha_flat[1:budget_algAP], dim=c(sqrt(budget_algAP), sqrt(budget_algAP))), along = 3)
+  img <- rasterGrob(img, interpolate=TRUE)
+  return(img)
+}
 
 #Set target image size
 target_size <- c(224, 224)
@@ -71,8 +88,13 @@ for (i in f) {
   budget_algPIXEL<- budget*(0.2) #Weight Decided for Pixel Swap Algorithm 
   budget_algSMOOTH<- budget*(0.14752) #Weight Decided for Channel Smoothing Algorithm 
   budget_algRGB<- budget*(0.16717) #Weight Decided for RGB attack Algorithm 
-  budget_algx<- budget*(0.2)  #Weight Decided for x Algorithm 
+  budget_algAP<- budget*(0.2)  #Weight Decided for Adversarial Patch Algorithm 
   budget_algCCP<- budget*(0.6853)*(0.009) #Weight Decided for CCP attack Algorithm
+  
+  ##Adversarial Patch Algorithm: Mo_____________________________________________
+  
+  #Calls Function 3 to Apply Algorithm
+  img_mod <- apply_algorithm2(test_array)
   
   ##Random Pixel Swap Algorithm: Nicholas and Andrew____________________________
   #Generate random pixel indices
@@ -165,8 +187,13 @@ for (i in f) {
   budget_algPIXEL<- budget*(0.2) #Weight Decided for Pixel Swap Algorithm 
   budget_algSMOOTH<- budget*(0.14752) #Weight Decided for Channel Smoothing Algorithm 
   budget_algRGB<- budget*(0.16717) #Weight Decided for RGB attack Algorithm 
-  budget_algx<- budget*(0.2)  #Weight Decided for x Algorithm 
+  budget_algAP<- budget*(0.2)  #Weight Decided for Adversarial Patch Algorithm 
   budget_algCCP<- budget*(0.6853)*(0.009) #Weight Decided for CCP attack Algorithm
+  
+  ##Adversarial Patch Algorithm: Mo____________________________
+  
+  #Calls Function 3 to Apply Algorithm
+  img_mod <- apply_algorithm2(test_array)
   
   ##Random Pixel Swap Algorithm: Nicholas and Andrew____________________________
   #Generate random pixel indices
