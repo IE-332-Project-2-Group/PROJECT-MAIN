@@ -83,13 +83,13 @@ for (i in f) {
   test_array <- array_reshape(test_array, c(1, dim(test_array)))
   test_array <- test_array / 255
   pixel_num <- 224 * 224
-  budget <- round(pixel_num * 0.01)
+  budget <- round(pixel_num * 0.01 * 0.009)
   
-  budget_algPIXEL<- budget*(0.2) #Weight Decided for Pixel Swap Algorithm 
-  budget_algSMOOTH<- budget*(0.14752) #Weight Decided for Channel Smoothing Algorithm 
-  budget_algRGB<- budget*(0.16717) #Weight Decided for RGB attack Algorithm 
-  budget_algAP<- budget*(0.2)  #Weight Decided for Adversarial Patch Algorithm 
-  budget_algCCP<- budget*(0.6853)*(0.009) #Weight Decided for CCP attack Algorithm
+  budget_algPIXEL<- budget*(0.01059) #Weight Decided for Pixel Swap Algorithm 
+  budget_algSMOOTH<- budget*(0.08669) #Weight Decided for Channel Smoothing Algorithm 
+  budget_algRGB<- budget*(0.09719) #Weight Decided for RGB attack Algorithm 
+  budget_algAP<- budget*(0.40257)  #Weight Decided for Adversarial Patch Algorithm 
+  budget_algCCP<- budget*(0.40257) #Weight Decided for CCP attack Algorithm
   
   ##Adversarial Patch Algorithm: Mo_____________________________________________
   
@@ -156,6 +156,7 @@ for (i in f) {
   
   test_array <- ccp_attack(test_array, trans)
   
+  ##MAIN ALG____________________________________________________________________
   pred <- model %>% predict(test_array)
   
   #Record results in Res
@@ -182,13 +183,13 @@ for (i in f) {
   test_array <- array_reshape(test_array, c(1, dim(test_array)))
   test_array <- test_array / 255
   pixel_num <- 224 * 224
-  budget <- round(pixel_num * 0.01)
+  budget <- round(pixel_num * 0.01 * 0.009)
   
-  budget_algPIXEL<- budget*(0.2) #Weight Decided for Pixel Swap Algorithm 
-  budget_algSMOOTH<- budget*(0.14752) #Weight Decided for Channel Smoothing Algorithm 
-  budget_algRGB<- budget*(0.16717) #Weight Decided for RGB attack Algorithm 
-  budget_algAP<- budget*(0.2)  #Weight Decided for Adversarial Patch Algorithm 
-  budget_algCCP<- budget*(0.6853)*(0.009) #Weight Decided for CCP attack Algorithm
+  budget_algPIXEL<- budget*(0.01059) #Weight Decided for Pixel Swap Algorithm 
+  budget_algSMOOTH<- budget*(0.08669) #Weight Decided for Channel Smoothing Algorithm 
+  budget_algRGB<- budget*(0.09719) #Weight Decided for RGB attack Algorithm 
+  budget_algAP<- budget*(0.40257)  #Weight Decided for Adversarial Patch Algorithm 
+  budget_algCCP<- budget*(0.40257) #Weight Decided for CCP attack Algorithm
   
   ##Adversarial Patch Algorithm: Mo____________________________
   
@@ -253,6 +254,7 @@ for (i in f) {
   
   test_array <- ccp_attack(test_array, trans)
   
+  ##MAIN ALG____________________________________________________________________
   pred <- model %>% predict(test_array)
   
   #Record results in Res
