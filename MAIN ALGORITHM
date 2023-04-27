@@ -21,8 +21,6 @@ change_brightness <- function(img, alpha, beta) {
     if (col_index == 0){ col_index <- 224}
     new_image[, row_index, col_index ,] <- pmax(pmin(alpha*new_image[, row_index, col_index ,] + beta, 255), 0)
   } 
-  #new_image <- array(0L, dim = dim(img))
-  #new_image <- pmax(pmin(alpha*x + beta, 255), 0)
   return(new_image)
 }
 
@@ -76,7 +74,15 @@ for (i in f) {
   budget_alg4<- budget*(0.14752) #Weight Decided for Algorithm 4
   budget_alg6<- budget*(0.6853)*(0.009) #Weight Decided for Algorithm 6
   
-  ##Algorithm 4 Andrew___________________________________________________________
+  ##Algorithm 2 Nicholas and Andrew_____________________________________________
+  #Generate random pixel indices
+  pixel_indices_2 <- sample(pixel_num, budget_alg2, replace = FALSE)
+  
+  #Swap Random Pixels
+  test_array[pixel_indices_2] <- sample(test_array[setdiff(seq_along(test_array), pixel_indices_2)], budget_alg2)
+  
+  
+  ##Algorithm 4 Andrew__________________________________________________________
   #Generate random pixel indices
   pixel_indices_4 <- sample(pixel_num, budget_alg4, replace = FALSE)
   
@@ -161,6 +167,14 @@ for (i in f) {
   budget_alg3<- budget*(0.2) #Weight Decided for Algorithm 3
   budget_alg4<- budget*(0.14752) #Weight Decided for Algorithm 4
   budget_alg6<- budget*(0.6853)*(0.009) #Weight Decided for Algorithm 6
+  
+  ##Algorithm 2 Nicholas and Andrew_____________________________________________
+  #Generate random pixel indices
+  pixel_indices_2 <- sample(pixel_num, budget_alg2, replace = FALSE)
+  
+  #Swap Random Pixels
+  test_array[pixel_indices_2] <- sample(test_array[setdiff(seq_along(test_array), pixel_indices_2)], budget_alg2)
+  
   ##Algorithm 4 Andrew___________________________________________________________
   #Generate random pixel indices
   pixel_indices_4 <- sample(pixel_num, budget_alg4, replace = FALSE)
